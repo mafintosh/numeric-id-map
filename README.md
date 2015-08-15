@@ -6,6 +6,8 @@ Data structure that maps entries to numeric ids
 npm install numeric-id-map
 ```
 
+[![build status](http://img.shields.io/travis/mafintosh/numeric-id-map.svg?style=flat)](http://travis-ci.org/mafintosh/numeric-id-map)
+
 ## Usage
 
 ``` js
