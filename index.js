@@ -3,14 +3,8 @@ module.exports = NumericIdMap
 function NumericIdMap (list) {
   if (!(this instanceof NumericIdMap)) return new NumericIdMap(list)
 
-  this.free = []
   this.list = list || []
-
-  if (this.list.length) {
-    for (var i = this.list.length - 1; i >= 0; i--) {
-      if (!this.list[i]) this.free.push(i)
-    }
-  }
+  this.length = 0
 }
 
 NumericIdMap.prototype.toJSON = function () {
@@ -18,7 +12,7 @@ NumericIdMap.prototype.toJSON = function () {
 }
 
 NumericIdMap.prototype.add = function (obj) {
-  var i = this.free.length ? this.free.pop() : this.list.push(null) - 1
+  var i = this._alloc()
   this.list[i] = obj
   return i
 }
@@ -28,11 +22,25 @@ NumericIdMap.prototype.remove = function (i) {
   if (!obj) return null
 
   this.list[i] = null
-  this.free.push(i)
+  while (this.length && !this.list[this.length - 1]) {
+    this.length--
+    this.list.pop()
+  }
 
   return obj
 }
 
 NumericIdMap.prototype.get = function (i) {
   return this.list[i]
+}
+
+NumericIdMap.prototype._alloc = function () {
+  var i = this.list.indexOf(null)
+
+  if (i === -1) {
+    this.length++
+    return this.list.push(null) - 1
+  }
+
+  return i
 }
